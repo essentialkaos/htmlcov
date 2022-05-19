@@ -29,7 +29,7 @@ import (
 const (
 	APP  = "htmlcov"
 	VER  = "0.0.1"
-	DESC = "Utility for converting coverage profiles into html pages"
+	DESC = "Utility for converting coverage profiles into HTML pages"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
