@@ -67,7 +67,7 @@ Usage: htmlcov {options} coverage-file
 Options
 
   --output, -o file    Output file (default: coverage.html)
-  --remove, -r         Delete input file after successfull generation
+  --remove, -r         Delete input file after successful generation
   --no-color, -nc      Disable colors in output
   --help, -h           Show this help message
   --version, -v        Show version
