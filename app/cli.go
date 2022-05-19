@@ -28,7 +28,7 @@ import (
 // Basic utility info
 const (
 	APP  = "htmlcov"
-	VER  = "0.0.1"
+	VER  = "0.0.2"
 	DESC = "Utility for converting coverage profiles into HTML pages"
 )
 
@@ -224,7 +224,7 @@ func genUsage() *usage.Info {
 	info := usage.NewInfo("", "coverage-file")
 
 	info.AddOption(OPT_OUTPUT, "Output file {s-}(default: coverage.html){!}", "file")
-	info.AddOption(OPT_REMOVE, "Delete input file after successfull generation")
+	info.AddOption(OPT_REMOVE, "Delete input file after successful generation")
 	info.AddOption(OPT_NO_COLOR, "Disable colors in output")
 	info.AddOption(OPT_HELP, "Show this help message")
 	info.AddOption(OPT_VER, "Show version")
