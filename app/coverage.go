@@ -170,23 +170,35 @@ const TEMPLATE = `<!DOCTYPE html="en">
       files = document.getElementById('files');
       current = document.getElementById('file0');
 
-      updateViewport();
-
-      document.title = current.getAttribute('data-cover') + ' • ' + current.getAttribute('data-name');
+      if (window.location.hash != "") {
+        var selectedFile = window.location.hash.substr(1);
+        swapFiles('file' + selectedFile);
+        files.selectedIndex = parseInt(selectedFile);
+      } else {
+        updateInfo(current.id);
+      }
 
       files.addEventListener('change', onChange, false);
     }
 
     function onChange() {
+      swapFiles(files.value);
+    }
+
+    function swapFiles(file) {
       current.style.display = 'none';
-      current = document.getElementById(files.value);
+      current = document.getElementById(file);
       current.style.display = 'block';
 
       updateViewport();
-
-      document.title = current.getAttribute('data-cover') + ' • ' + current.getAttribute('data-name');
+      updateInfo(file);
 
       window.scrollTo(0, 0);
+    }
+
+    function updateInfo(file) {
+      window.location.hash = file.substr(4);
+      document.title = current.getAttribute('data-cover') + ' • ' + current.getAttribute('data-name');
     }
 
     function updateViewport() {
