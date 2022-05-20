@@ -16,6 +16,8 @@
 
 ![Screenshot](https://gh.kaos.st/htmlcov1.png)
 
+![Screenshot](https://gh.kaos.st/htmlcov2.png)
+
 ### Installation
 
 #### From source

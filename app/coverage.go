@@ -48,6 +48,10 @@ const TEMPLATE = `<!DOCTYPE html="en">
         font-variant-ligatures: none;
       }
 
+      .point {
+        background: none !important;
+      }
+
       #topbar {
         background: #111;
         border-bottom: 1px solid #444;
@@ -139,17 +143,17 @@ const TEMPLATE = `<!DOCTYPE html="en">
         <span class="cov0" title="Code without test coverage">not covered</span>
         <span class="cov8" title="Code covered by tests">covered</span>
       {{- else}}
-        <span class="cov0">no coverage</span>
-        <span class="cov1">low coverage</span>
-        <span class="cov2">●</span>
-        <span class="cov3">●</span>
-        <span class="cov4">●</span>
-        <span class="cov5">●</span>
-        <span class="cov6">●</span>
-        <span class="cov7">●</span>
-        <span class="cov8">●</span>
-        <span class="cov9">●</span>
-        <span class="cov10">high coverage</span>
+        <span class="cov0" title="Code without test coverage">no coverage</span>
+        <span class="cov1" title="Code with low coverage (counter = 1)">low coverage</span>
+        <span class="cov2 point" title="Code with coverage counter = 2">●</span>
+        <span class="cov3 point" title="Code with coverage counter = 3">●</span>
+        <span class="cov4 point" title="Code with coverage counter = 4">●</span>
+        <span class="cov5 point" title="Code with coverage counter = 5">●</span>
+        <span class="cov6 point" title="Code with coverage counter = 6">●</span>
+        <span class="cov7 point" title="Code with coverage counter = 7">●</span>
+        <span class="cov8 point" title="Code with coverage counter = 8">●</span>
+        <span class="cov9 point" title="Code with coverage counter = 9">●</span>
+        <span class="cov10" title="Code with high coverage (counter = 10)">high coverage</span>
       {{- end}}
       </div>
     </div>
