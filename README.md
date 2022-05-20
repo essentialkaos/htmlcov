@@ -12,7 +12,7 @@
 
 <br/>
 
-`htmlcov` is utility for converting coverage profiles into HTML pages.
+`htmlcov` is an utility for converting Go coverage profiles into HTML pages. It's just better version of `go tool cover -html=cover.out -o coverage.html` command.
 
 ### Installation
 

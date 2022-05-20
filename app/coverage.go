@@ -17,10 +17,12 @@ import (
 	"math"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/essentialkaos/ek/v12/color"
 	"github.com/essentialkaos/ek/v12/fsutil"
+	"github.com/essentialkaos/ek/v12/mathutil"
+	"github.com/essentialkaos/ek/v12/path"
+	"github.com/essentialkaos/ek/v12/strutil"
 
 	"golang.org/x/tools/cover"
 )
@@ -31,15 +33,16 @@ import (
 const TEMPLATE = `<!DOCTYPE html="en">
 <html>
   <head>
-  	<title>Coverage</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Coverage report</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📃</text></svg>" />
     <style>
       body {
-        background: #222;
+        background: #191919;
         color: #777;
       }
 
-      body, pre, #legend span {
+      body, pre, #files, #legend span {
         font-family: 'JetBrains Mono', 'Fira Code', Consolas, Menlo, monospace;
         font-size: 15px;
         font-variant-ligatures: none;
@@ -49,14 +52,35 @@ const TEMPLATE = `<!DOCTYPE html="en">
         background: #111;
         border-bottom: 1px solid #444;
         font-weight: bold;
-        height: 42px;
+        height: 44px;
         position: fixed;
         top: 0; left: 0; right: 0;
       }
 
-      #content {
+      #files {
+        background-color: #191919;
+        border-radius: 4px;
+        border: 1px solid #444;
+        color: #ccc;
+        padding: 2px;
+        font-size: 12px;
+      }
+
+      #numbers {
+        color: #333;
+        cursor: default;
+        float: left;
+        margin-right: 8px;
+        overflow-y: hidden;
+        text-align: right;
+        user-select: none;
+        width: 38px;
+      }
+
+      #source {
         margin-top: 50px;
         margin-left: 4px;
+        tab-size: 4;
       }
 
       #nav, #legend {
@@ -73,7 +97,28 @@ const TEMPLATE = `<!DOCTYPE html="en">
       }
 
       #legend span {
-        margin: 0 5px;
+        margin: 0 4px;
+        background: #222;
+        border-radius: 8px;
+        cursor: help;
+        font-size: 14px;
+        padding: 2px 8px;
+      }
+
+      @media (max-width: 860px) {
+        body, pre, #legend span {
+          font-size: 14px;
+        }
+
+        #source {
+          tab-size: 2;
+        }
+      }
+
+      @media (max-width: 680px) {
+        body, pre, #legend span {
+          font-size: 12px;
+        }
       }
 
 {{colors}}
@@ -83,17 +128,17 @@ const TEMPLATE = `<!DOCTYPE html="en">
     <div id="topbar">
       <div id="nav">
         <select id="files">
-        {{range $i, $f := .Files}}
+        {{- range $i, $f := .Files}}
         <option value="file{{$i}}">{{$f.Name}} ({{printf "%.1f" $f.Coverage}}%)</option>
-        {{end}}
+        {{- end}}
         </select>
       </div>
       <div id="legend">
-        <span>not tracked</span>
-      {{if .IsSet}}
-        <span class="cov0">not covered</span>
-        <span class="cov8">covered</span>
-      {{else}}
+        <span title="Code which can't be tested">not tracked</span>
+      {{- if .IsSet}}
+        <span class="cov0" title="Code without test coverage">not covered</span>
+        <span class="cov8" title="Code covered by tests">covered</span>
+      {{- else}}
         <span class="cov0">no coverage</span>
         <span class="cov1">low coverage</span>
         <span class="cov2">●</span>
@@ -105,33 +150,53 @@ const TEMPLATE = `<!DOCTYPE html="en">
         <span class="cov8">●</span>
         <span class="cov9">●</span>
         <span class="cov10">high coverage</span>
-      {{end}}
+      {{- end}}
       </div>
     </div>
-    <div id="content">
-    {{range $i, $f := .Files}}
-    <pre class="file" id="file{{$i}}" {{if $i}}style="display: none"{{end}}>{{$f.Data}}</pre>
-    {{end}}
-    </div>
+      <div id="content">
+      <div id="numbers">{{range .Lines}}{{.}}<br/>{{end}}</div>
+      <div id="source">
+      {{range $i, $f := .Files}}
+      <pre class="file" id="file{{$i}}" data-name="{{$f.Name}}" data-lines="{{$f.Lines}}" data-cover="{{printf "%.1f" $f.Coverage}}%"{{if $i}} style="display: none"{{end}}>{{$f.Data}}</pre>
+      {{end}}
+      </div>
+     </div>
   </body>
   <script>
-  (function() {
-    var files = document.getElementById('files');
-    var visible = document.getElementById('file0');
-    files.addEventListener('change', onChange, false);
+    var files
+    var current
+
+    function main() {
+      files = document.getElementById('files');
+      current = document.getElementById('file0');
+
+      updateViewport();
+
+      document.title = current.getAttribute('data-cover') + ' • ' + current.getAttribute('data-name');
+
+      files.addEventListener('change', onChange, false);
+    }
+
     function onChange() {
-      visible.style.display = 'none';
-      visible = document.getElementById(files.value);
-      visible.style.display = 'block';
+      current.style.display = 'none';
+      current = document.getElementById(files.value);
+      current.style.display = 'block';
+
+      updateViewport();
+
+      document.title = current.getAttribute('data-cover') + ' • ' + current.getAttribute('data-name');
+
       window.scrollTo(0, 0);
     }
-  })();
+
+    function updateViewport() {
+      document.getElementById('numbers').style.maxHeight = current.offsetHeight;
+    }
+
+    main();
   </script>
 </html>
 `
-
-// TAB_SIZE is number of spaces for tab symbols
-const TAB_SIZE = 4
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
@@ -143,6 +208,7 @@ type CoverData struct {
 type FileCover struct {
 	Name     string
 	Data     template.HTML
+	Lines    int
 	Coverage float64
 }
 
@@ -156,6 +222,26 @@ var (
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
+// Lines returns slice with line numbers
+func (c *CoverData) Lines() []int {
+	var maxLines int
+
+	for _, f := range c.Files {
+		maxLines = mathutil.Max(maxLines, f.Lines)
+	}
+
+	result := make([]int, maxLines)
+
+	for i := 0; i < maxLines; i++ {
+		result[i] = i + 1
+	}
+
+	return result
+}
+
+// ////////////////////////////////////////////////////////////////////////////////// //
+
+// convertProfile converts profiles into HTML and writes it to the given file
 func convertProfile(profileFile, outputFile string) error {
 	profiles, err := cover.ParseProfiles(profileFile)
 
@@ -178,6 +264,8 @@ func convertProfile(profileFile, outputFile string) error {
 
 		coverData.Files = append(coverData.Files, fileCover)
 	}
+
+	uniquifyFileNames(coverData)
 
 	return writeCoverReport(coverData, outputFile)
 }
@@ -215,7 +303,7 @@ func generateFileCover(profile *cover.Profile) (*FileCover, error) {
 		return nil, err
 	}
 
-	buf, err := generateHTML(profile, data)
+	buf, lines, err := generateHTML(profile, data)
 
 	if err != nil {
 		return nil, err
@@ -224,13 +312,15 @@ func generateFileCover(profile *cover.Profile) (*FileCover, error) {
 	return &FileCover{
 		Name:     file,
 		Data:     template.HTML(buf.String()),
+		Lines:    lines + 1,
 		Coverage: calculateCoverage(profile),
 	}, nil
 }
 
 // generateHTML generates HTML code for given source data
-func generateHTML(profile *cover.Profile, data []byte) (bytes.Buffer, error) {
+func generateHTML(profile *cover.Profile, data []byte) (bytes.Buffer, int, error) {
 	var buf bytes.Buffer
+	var lines int
 
 	boundaries := profile.Boundaries(data)
 
@@ -245,7 +335,11 @@ func generateHTML(profile *cover.Profile, data []byte) (bytes.Buffer, error) {
 					n = int(math.Floor(boundary.Norm*9)) + 1
 				}
 
-				fmt.Fprintf(&buf, `<span class="cov%v" title="%v">`, n, boundary.Count)
+				if profile.Mode == "set" {
+					fmt.Fprintf(&buf, `<span class="cov%v">`, n)
+				} else {
+					fmt.Fprintf(&buf, `<span class="cov%v" title="Count: %v">`, n, boundary.Count)
+				}
 			} else {
 				buf.WriteString(`</span>`)
 			}
@@ -260,14 +354,15 @@ func generateHTML(profile *cover.Profile, data []byte) (bytes.Buffer, error) {
 			buf.WriteString("&lt;")
 		case '&':
 			buf.WriteString("&amp;")
-		case '\t':
-			buf.WriteString(strings.Repeat(" ", TAB_SIZE))
+		case '\n':
+			buf.WriteRune('\n')
+			lines++
 		default:
 			buf.WriteByte(data[i])
 		}
 	}
 
-	return buf, nil
+	return buf, lines, nil
 }
 
 // calculateCoverage calculates coverage as a percentage
@@ -329,4 +424,38 @@ func getCoverageColors() template.CSS {
 	}
 
 	return template.CSS(buf.String())
+}
+
+// uniquifyFileNames remove the same part from file names
+func uniquifyFileNames(data *CoverData) {
+	if len(data.Files) == 1 {
+		data.Files[0].Name = path.Base(data.Files[0].Name)
+		return
+	}
+
+	var samePart string
+
+MAIN:
+	for i := 0; i < 1024; i++ {
+		var cr byte
+
+		for j, f := range data.Files {
+			if j == 0 && len(f.Name) > i {
+				cr = f.Name[i]
+				continue
+			}
+
+			if cr != f.Name[i] {
+				break MAIN
+			}
+		}
+
+		samePart += string(cr)
+	}
+
+	if samePart != "" {
+		for _, f := range data.Files {
+			f.Name = strutil.Exclude(f.Name, samePart)
+		}
+	}
 }

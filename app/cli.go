@@ -11,10 +11,12 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/essentialkaos/ek/v12/fmtc"
 	"github.com/essentialkaos/ek/v12/fsutil"
 	"github.com/essentialkaos/ek/v12/options"
+	"github.com/essentialkaos/ek/v12/timeutil"
 	"github.com/essentialkaos/ek/v12/usage"
 	"github.com/essentialkaos/ek/v12/usage/completion/bash"
 	"github.com/essentialkaos/ek/v12/usage/completion/fish"
@@ -28,7 +30,7 @@ import (
 // Basic utility info
 const (
 	APP  = "htmlcov"
-	VER  = "0.0.2"
+	VER  = "0.0.3"
 	DESC = "Utility for converting coverage profiles into HTML pages"
 )
 
@@ -137,6 +139,7 @@ func process(args options.Arguments) {
 		printErrorAndExit(err.Error())
 	}
 
+	start := time.Now()
 	output := options.GetS(OPT_OUTPUT)
 	err = convertProfile(covFile, output)
 
@@ -148,7 +151,10 @@ func process(args options.Arguments) {
 		os.Remove(covFile)
 	}
 
-	fmtc.Printf("{g}Report successfully saved as {g*}%s{!}\n", output)
+	fmtc.Printf(
+		"{g}Report successfully saved as {g*}%s{!} {s-}(processing: %s){!}\n",
+		output, timeutil.PrettyDuration(time.Since(start)),
+	)
 }
 
 // printError prints error message to console
