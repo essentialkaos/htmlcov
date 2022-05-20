@@ -14,6 +14,8 @@
 
 `htmlcov` is an utility for converting Go coverage profiles into HTML pages. It's just better version of `go tool cover -html=cover.out -o coverage.html` command.
 
+![Screenshot](https://gh.kaos.st/htmlcov1.png)
+
 ### Installation
 
 #### From source
