@@ -30,7 +30,7 @@ import (
 // Basic utility info
 const (
 	APP  = "htmlcov"
-	VER  = "0.0.3"
+	VER  = "1.0.0"
 	DESC = "Utility for converting coverage profiles into HTML pages"
 )
 
