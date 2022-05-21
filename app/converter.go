@@ -179,6 +179,7 @@ const TEMPLATE = `<!DOCTYPE html="en">
         swapFiles('file' + selectedFile);
         files.selectedIndex = parseInt(selectedFile);
       } else {
+        updateViewport();
         updateInfo(current.id);
       }
 
