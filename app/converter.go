@@ -443,7 +443,7 @@ func getCoverageColors() template.CSS {
 	return template.CSS(buf.String())
 }
 
-// uniquifyFileNames remove the same part from file names
+// uniquifyFileNames removes the repeated part from file names
 func uniquifyFileNames(data *CoverData) {
 	if len(data.Files) == 1 {
 		data.Files[0].Name = path.Base(data.Files[0].Name)
