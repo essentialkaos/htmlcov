@@ -453,26 +453,24 @@ func uniquifyFileNames(data *CoverData) {
 	var samePart string
 
 MAIN:
-	for i := 0; i < 1024; i++ {
-		var cr byte
-
+	for i := 1; i < 128; i++ {
 		for j, f := range data.Files {
-			if j == 0 && len(f.Name) > i {
-				cr = f.Name[i]
+			dir := path.DirN(f.Name, i)
+
+			if j == 0 && dir != f.Name {
+				samePart = path.DirN(f.Name, i)
 				continue
 			}
 
-			if cr != f.Name[i] {
+			if dir != samePart {
 				break MAIN
 			}
 		}
-
-		samePart += string(cr)
 	}
 
-	if samePart != "" {
-		for _, f := range data.Files {
-			f.Name = strutil.Exclude(f.Name, samePart)
-		}
+	samePart += "/"
+
+	for _, f := range data.Files {
+		f.Name = strutil.Exclude(f.Name, samePart)
 	}
 }
