@@ -454,18 +454,20 @@ func uniquifyFileNames(data *CoverData) {
 
 MAIN:
 	for i := 1; i < 128; i++ {
+		curDir := ""
 		for j, f := range data.Files {
 			dir := path.DirN(f.Name, i)
 
-			if j == 0 && dir != f.Name {
-				samePart = path.DirN(f.Name, i)
+			if j == 0 {
+				curDir = dir
 				continue
 			}
 
-			if dir != samePart {
+			if dir != curDir {
 				break MAIN
 			}
 		}
+		samePart = curDir
 	}
 
 	samePart += "/"
