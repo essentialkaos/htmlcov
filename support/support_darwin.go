@@ -1,4 +1,4 @@
-package main
+package support
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
@@ -8,24 +8,33 @@ package main
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 import (
-	_ "embed"
-
-	CLI "github.com/essentialkaos/htmlcov/app"
+	"github.com/essentialkaos/ek/v12/fmtutil"
+	"github.com/essentialkaos/ek/v12/system"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-//go:embed go.mod
-var gomod []byte
+// showOSInfo shows verbose information about system
+func showOSInfo() {
+	systemInfo, err := system.GetSystemInfo()
 
-// gitrev is short hash of the latest git commit
-var gitrev string
+	if err != nil {
+		return
+	}
 
-// ////////////////////////////////////////////////////////////////////////////////// //
+	osInfo, err := system.GetOSInfo()
 
-// main is main function
-func main() {
-	CLI.Run(gitrev, gomod)
+	if err == nil {
+		fmtutil.Separator(false, "OS INFO")
+
+		printInfo(12, "Name", osInfo.Name)
+		printInfo(12, "Version", osInfo.VersionID)
+		printInfo(12, "Build", osInfo.Build)
+	}
+
+	fmtutil.Separator(false, "SYSTEM INFO")
+
+	printInfo(7, "Name", systemInfo.OS)
+	printInfo(7, "Arch", systemInfo.Arch)
+	printInfo(7, "Kernel", systemInfo.Kernel)
 }
-
-// ////////////////////////////////////////////////////////////////////////////////// //

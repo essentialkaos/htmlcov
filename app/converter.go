@@ -2,7 +2,7 @@ package app
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2022 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2023 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -232,9 +232,9 @@ type FileCover struct {
 // ////////////////////////////////////////////////////////////////////////////////// //
 
 var (
-	covNoneColor = color.Hex(0xDD3D27)
-	covMinColor  = color.Hex(0x989997)
-	covMaxColor  = color.Hex(0x77D300)
+	covNoneColor = color.NewHex(0xDD3D27)
+	covMinColor  = color.NewHex(0x989997)
+	covMaxColor  = color.NewHex(0x77D300)
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -428,7 +428,7 @@ func getCoverageColors() template.CSS {
 	maxColor := covMaxColor.ToRGB().ToHSV()
 	vDiff := (maxColor.V - minColor.V) / 10.0
 
-	fmt.Fprintf(&buf, "      .cov0 { color: %s; }\n", covNoneColor.ToWeb(false))
+	fmt.Fprintf(&buf, "      .cov0 { color: %s; }\n", covNoneColor.ToWeb(false, true))
 
 	for i := 0; i < 10; i++ {
 		c := color.HSV{
@@ -437,7 +437,7 @@ func getCoverageColors() template.CSS {
 			V: minColor.V + (vDiff * float64(i)),
 		}
 
-		fmt.Fprintf(&buf, "      .cov%d { color: %s; }\n", i+1, c.ToRGB().ToHex().ToWeb(false))
+		fmt.Fprintf(&buf, "      .cov%d { color: %s; }\n", i+1, c.ToRGB().ToHex().ToWeb(false, true))
 	}
 
 	return template.CSS(buf.String())

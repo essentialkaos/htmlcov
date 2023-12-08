@@ -2,7 +2,7 @@ package app
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 //                                                                                    //
-//                         Copyright (c) 2022 ESSENTIAL KAOS                          //
+//                         Copyright (c) 2023 ESSENTIAL KAOS                          //
 //      Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>     //
 //                                                                                    //
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -10,7 +10,7 @@ package app
 import (
 	"fmt"
 	"os"
-	"strings"
+	"runtime"
 	"time"
 
 	"github.com/essentialkaos/ek/v12/fmtc"
@@ -23,6 +23,8 @@ import (
 	"github.com/essentialkaos/ek/v12/usage/completion/zsh"
 	"github.com/essentialkaos/ek/v12/usage/man"
 	"github.com/essentialkaos/ek/v12/usage/update"
+
+	"github.com/essentialkaos/htmlcov/support"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -30,7 +32,7 @@ import (
 // Basic utility info
 const (
 	APP  = "htmlcov"
-	VER  = "1.0.2"
+	VER  = "1.1.0"
 	DESC = "Utility for converting coverage profiles into HTML pages"
 )
 
@@ -39,11 +41,12 @@ const (
 // Options
 const (
 	OPT_OUTPUT   = "o:output"
-	OPT_REMOVE   = "r:remove"
+	OPT_REMOVE   = "R:remove"
 	OPT_NO_COLOR = "nc:no-color"
 	OPT_HELP     = "h:help"
 	OPT_VER      = "v:version"
 
+	OPT_VERB_VER     = "vv:verbose-version"
 	OPT_COMPLETION   = "completion"
 	OPT_GENERATE_MAN = "generate-man"
 )
@@ -55,18 +58,29 @@ var optMap = options.Map{
 	OPT_OUTPUT:   {Value: "coverage.html"},
 	OPT_REMOVE:   {Type: options.BOOL},
 	OPT_NO_COLOR: {Type: options.BOOL},
-	OPT_HELP:     {Type: options.BOOL, Alias: "u:usage"},
-	OPT_VER:      {Type: options.BOOL, Alias: "ver"},
+	OPT_HELP:     {Type: options.BOOL},
+	OPT_VER:      {Type: options.BOOL},
 
+	OPT_VERB_VER:     {Type: options.BOOL},
 	OPT_COMPLETION:   {},
 	OPT_GENERATE_MAN: {Type: options.BOOL},
 }
 
+// colorTagApp is app name color tag
+var colorTagApp string
+
+// colorTagVer is app version color tag
+var colorTagVer string
+
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-// Init is main function
-func Init() {
+// Run is main function
+func Run(gitRev string, gomod []byte) {
+	runtime.GOMAXPROCS(2)
+
 	args, errs := options.Parse(optMap)
+
+	preConfigureUI()
 
 	if len(errs) != 0 {
 		for _, err := range errs {
@@ -76,24 +90,23 @@ func Init() {
 		os.Exit(1)
 	}
 
-	preConfigureUI()
-
-	if options.Has(OPT_COMPLETION) {
-		os.Exit(genCompletion())
-	}
-
-	if options.Has(OPT_GENERATE_MAN) {
-		os.Exit(genMan())
-	}
-
 	configureUI()
 
-	if options.GetB(OPT_VER) {
-		os.Exit(showAbout())
-	}
-
-	if options.GetB(OPT_HELP) || len(args) == 0 {
-		os.Exit(showUsage())
+	switch {
+	case options.Has(OPT_COMPLETION):
+		os.Exit(printCompletion())
+	case options.Has(OPT_GENERATE_MAN):
+		printMan()
+		os.Exit(0)
+	case options.GetB(OPT_VER):
+		genAbout(gitRev).Print(options.GetS(OPT_VER))
+		os.Exit(0)
+	case options.GetB(OPT_VERB_VER):
+		support.Print(APP, VER, gitRev, gomod)
+		os.Exit(0)
+	case options.GetB(OPT_HELP) || len(args) == 0:
+		genUsage().Print()
+		os.Exit(0)
 	}
 
 	process(args)
@@ -101,24 +114,7 @@ func Init() {
 
 // preConfigureUI preconfigures UI based on information about user terminal
 func preConfigureUI() {
-	term := os.Getenv("TERM")
-
-	fmtc.DisableColors = true
-
-	if term != "" {
-		switch {
-		case strings.Contains(term, "xterm"),
-			strings.Contains(term, "color"),
-			term == "screen":
-			fmtc.DisableColors = false
-		}
-	}
-
-	if !fsutil.IsCharacterDevice("/dev/stdout") && os.Getenv("FAKETTY") == "" {
-		fmtc.DisableColors = true
-	}
-
-	if os.Getenv("NO_COLOR") != "" {
+	if !fmtc.IsColorsSupported() {
 		fmtc.DisableColors = true
 	}
 }
@@ -128,9 +124,18 @@ func configureUI() {
 	if options.GetB(OPT_NO_COLOR) {
 		fmtc.DisableColors = true
 	}
+
+	switch {
+	case fmtc.IsTrueColorSupported():
+		colorTagApp, colorTagVer = "{*}{#00ADD8}", "{#5DC9E2}"
+	case fmtc.Is256ColorsSupported():
+		colorTagApp, colorTagVer = "{*}{#38}", "{#74}"
+	default:
+		colorTagApp, colorTagVer = "{*}{c}", "{c}"
+	}
 }
 
-// process starts processing
+// process starts coverage profile processing
 func process(args options.Arguments) {
 	covFile := args.Get(0).Clean().String()
 	err := fsutil.ValidatePerms("FRS", covFile)
@@ -159,20 +164,7 @@ func process(args options.Arguments) {
 
 // printError prints error message to console
 func printError(f string, a ...interface{}) {
-	if len(a) == 0 {
-		fmtc.Fprintln(os.Stderr, "{r}"+f+"{!}")
-	} else {
-		fmtc.Fprintf(os.Stderr, "{r}"+f+"{!}\n", a...)
-	}
-}
-
-// printError prints warning message to console
-func printWarn(f string, a ...interface{}) {
-	if len(a) == 0 {
-		fmtc.Fprintln(os.Stderr, "{y}"+f+"{!}")
-	} else {
-		fmtc.Fprintf(os.Stderr, "{y}"+f+"{!}\n", a...)
-	}
+	fmtc.Fprintf(os.Stderr, "{r}"+f+"{!}\n", a...)
 }
 
 // printErrorAndExit print error message and exit with exit code 1
@@ -183,29 +175,17 @@ func printErrorAndExit(f string, a ...interface{}) {
 
 // ////////////////////////////////////////////////////////////////////////////////// //
 
-// showUsage prints usage info
-func showUsage() int {
-	genUsage().Render()
-	return 0
-}
-
-// showAbout prints info about version
-func showAbout() int {
-	genAbout().Render()
-	return 0
-}
-
-// genCompletion generates completion for different shells
-func genCompletion() int {
+// printCompletion prints completion for given shell
+func printCompletion() int {
 	info := genUsage()
 
 	switch options.GetS(OPT_COMPLETION) {
 	case "bash":
-		fmt.Printf(bash.Generate(info, "htmlcov"))
+		fmt.Print(bash.Generate(info, "aligo"))
 	case "fish":
-		fmt.Printf(fish.Generate(info, "htmlcov"))
+		fmt.Print(fish.Generate(info, "aligo"))
 	case "zsh":
-		fmt.Printf(zsh.Generate(info, optMap, "htmlcov"))
+		fmt.Print(zsh.Generate(info, optMap, "aligo"))
 	default:
 		return 1
 	}
@@ -213,21 +193,21 @@ func genCompletion() int {
 	return 0
 }
 
-// genMan generates man page
-func genMan() int {
+// printMan prints man page
+func printMan() {
 	fmt.Println(
 		man.Generate(
 			genUsage(),
-			genAbout(),
+			genAbout(""),
 		),
 	)
-
-	return 0
 }
 
 // genUsage generates usage info
 func genUsage() *usage.Info {
 	info := usage.NewInfo("", "coverage-file")
+
+	info.AppNameColorTag = colorTagApp
 
 	info.AddOption(OPT_OUTPUT, "Output file {s-}(default: coverage.html){!}", "file")
 	info.AddOption(OPT_REMOVE, "Delete input file after successful generation")
@@ -235,20 +215,41 @@ func genUsage() *usage.Info {
 	info.AddOption(OPT_HELP, "Show this help message")
 	info.AddOption(OPT_VER, "Show version")
 
+	info.AddRawExample(
+		"go test -coverprofile=cover.out ./... && htmlcov cover.out",
+		"Create coverage profile and convert it to HTML",
+	)
+
+	info.AddRawExample(
+		"go test -coverprofile=cover.out ./... && htmlcov -R -o report.html cover.out",
+		"Create coverage profile and convert it to HTML, save as report.html and remove profile",
+	)
+
 	return info
 }
 
 // genAbout generates info about version
-func genAbout() *usage.About {
-	return &usage.About{
-		App:           APP,
-		Version:       VER,
-		Desc:          DESC,
-		Year:          2009,
-		Owner:         "ESSENTIAL KAOS",
+func genAbout(gitRev string) *usage.About {
+	about := &usage.About{
+		App:     APP,
+		Version: VER,
+		Desc:    DESC,
+		Year:    2009,
+		Owner:   "ESSENTIAL KAOS",
+
+		AppNameColorTag: colorTagApp,
+		VersionColorTag: colorTagVer,
+		DescSeparator:   "—",
+
 		License:       "Apache License, Version 2.0 <https://www.apache.org/licenses/LICENSE-2.0>",
 		UpdateChecker: usage.UpdateChecker{"essentialkaos/htmlcov", update.GitHubChecker},
 	}
+
+	if gitRev != "" {
+		about.Build = "git:" + gitRev
+	}
+
+	return about
 }
 
 // ////////////////////////////////////////////////////////////////////////////////// //
