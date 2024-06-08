@@ -65,25 +65,7 @@ htmlcov --generate-man | sudo gzip > /usr/share/man/man1/htmlcov.1.gz
 
 ### Usage
 
-```
-Usage: htmlcov {options} coverage-file
-
-Options
-
-  --output, -o file    Output file (default: coverage.html)
-  --remove, -R         Delete input file after successful generation
-  --no-color, -nc      Disable colors in output
-  --help, -h           Show this help message
-  --version, -v        Show version
-
-Examples
-
-  go test -coverprofile=cover.out ./... && htmlcov cover.out
-  Create coverage profile and convert it to HTML
-
-  go test -coverprofile=cover.out ./... && htmlcov -R -o report.html cover.out
-  Create coverage profile and convert it to HTML, save as report.html and remove profile
-```
+<img src=".github/images/usage.svg" />
 
 ### CI Status
 
