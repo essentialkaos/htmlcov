@@ -1,11 +1,11 @@
-<p align="center"><a href="#readme"><img src="https://gh.kaos.st/htmlcov.svg"/></a></p>
+<p align="center"><a href="#readme"><img src=".github/images/card.svg"/></a></p>
 
 <p align="center">
   <a href="https://kaos.sh/w/htmlcov/ci"><img src="https://kaos.sh/w/htmlcov/ci.svg" alt="GitHub Actions CI Status" /></a>
   <a href="https://kaos.sh/r/htmlcov"><img src="https://kaos.sh/r/htmlcov.svg" alt="GoReportCard" /></a>
   <a href="https://kaos.sh/b/htmlcov"><img src="https://kaos.sh/b/876db5da-5b7e-4ad9-82c0-f347aac10dc2.svg" alt="Codebeat badge" /></a>
   <a href="https://kaos.sh/w/htmlcov/codeql"><img src="https://kaos.sh/w/htmlcov/codeql.svg" alt="GitHub Actions CodeQL Status" /></a>
-  <a href="#license"><img src="https://gh.kaos.st/apache2.svg"></a>
+  <a href="#license"><img src=".github/images/license.svg"/></a>
 </p>
 
 <p align="center"><a href="#installation">Installation</a> • <a href="#command-line-completion">Command-line completion</a> • <a href="#man-documentation">Man documentation</a> • <a href="#usage">Usage</a> • <a href="#ci-status">CI Status</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
@@ -14,9 +14,9 @@
 
 `htmlcov` is an utility for converting Go coverage profiles into HTML pages. It's just better version of `go tool cover -html=cover.out -o coverage.html` command.
 
-![Screenshot](https://gh.kaos.st/htmlcov1.png)
+![Screenshot](.github/images/screenshot1.png)
 
-![Screenshot](https://gh.kaos.st/htmlcov2.png)
+![Screenshot](.github/images/screenshot2.png)
 
 ### Installation
 
@@ -65,7 +65,7 @@ htmlcov --generate-man | sudo gzip > /usr/share/man/man1/htmlcov.1.gz
 
 ### Usage
 
-<img src=".github/images/usage.svg" />
+<p align="center"><img src=".github/images/usage.svg"/></p>
 
 ### CI Status
 
