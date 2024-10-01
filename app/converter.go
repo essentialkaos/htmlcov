@@ -13,7 +13,6 @@ import (
 	"fmt"
 	"go/build"
 	"html/template"
-	"io/ioutil"
 	"math"
 	"os"
 	"path/filepath"
@@ -417,7 +416,7 @@ func getSourceData(file string) ([]byte, error) {
 		return nil, err
 	}
 
-	return ioutil.ReadFile(srcFile)
+	return os.ReadFile(srcFile)
 }
 
 // getCoverageColors generates CSS with colors for different coverage levels
