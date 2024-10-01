@@ -3,7 +3,6 @@
 <p align="center">
   <a href="https://kaos.sh/w/htmlcov/ci"><img src="https://kaos.sh/w/htmlcov/ci.svg" alt="GitHub Actions CI Status" /></a>
   <a href="https://kaos.sh/r/htmlcov"><img src="https://kaos.sh/r/htmlcov.svg" alt="GoReportCard" /></a>
-  <a href="https://kaos.sh/b/htmlcov"><img src="https://kaos.sh/b/876db5da-5b7e-4ad9-82c0-f347aac10dc2.svg" alt="Codebeat badge" /></a>
   <a href="https://kaos.sh/w/htmlcov/codeql"><img src="https://kaos.sh/w/htmlcov/codeql.svg" alt="GitHub Actions CodeQL Status" /></a>
   <a href="#license"><img src=".github/images/license.svg"/></a>
 </p>
