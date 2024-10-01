@@ -186,11 +186,11 @@ func printCompletion() int {
 
 	switch options.GetS(OPT_COMPLETION) {
 	case "bash":
-		fmt.Print(bash.Generate(info, "aligo"))
+		fmt.Print(bash.Generate(info, "htmlcov"))
 	case "fish":
-		fmt.Print(fish.Generate(info, "aligo"))
+		fmt.Print(fish.Generate(info, "htmlcov"))
 	case "zsh":
-		fmt.Print(zsh.Generate(info, optMap, "aligo"))
+		fmt.Print(zsh.Generate(info, optMap, "htmlcov"))
 	default:
 		return 1
 	}
