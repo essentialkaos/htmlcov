@@ -1,9 +1,9 @@
 <p align="center"><a href="#readme"><img src=".github/images/card.svg"/></a></p>
 
 <p align="center">
-  <a href="https://kaos.sh/w/htmlcov/ci"><img src="https://kaos.sh/w/htmlcov/ci.svg" alt="GitHub Actions CI Status" /></a>
   <a href="https://kaos.sh/r/htmlcov"><img src="https://kaos.sh/r/htmlcov.svg" alt="GoReportCard" /></a>
-  <a href="https://kaos.sh/b/htmlcov"><img src="https://kaos.sh/b/876db5da-5b7e-4ad9-82c0-f347aac10dc2.svg" alt="Codebeat badge" /></a>
+  <a href="https://kaos.sh/y/htmlcov"><img src="https://kaos.sh/y/1bff0f909cd74de7bfe0baf2f23a18da.svg" alt="Codacy badge" /></a>
+  <a href="https://kaos.sh/w/htmlcov/ci"><img src="https://kaos.sh/w/htmlcov/ci.svg" alt="GitHub Actions CI Status" /></a>
   <a href="https://kaos.sh/w/htmlcov/codeql"><img src="https://kaos.sh/w/htmlcov/codeql.svg" alt="GitHub Actions CodeQL Status" /></a>
   <a href="#license"><img src=".github/images/license.svg"/></a>
 </p>
@@ -22,7 +22,7 @@
 
 #### From source
 
-To build the `htmlcov` from scratch, make sure you have a working Go 1.18+ workspace (_[instructions](https://go.dev/doc/install)_), then:
+To build the `htmlcov` from scratch, make sure you have a working [Go 1.22+](https://github.com/essentialkaos/.github/blob/master/GO-VERSION-SUPPORT.md) workspace (_[instructions](https://go.dev/doc/install)_), then:
 
 ```
 go install github.com/essentialkaos/htmlcov@latest

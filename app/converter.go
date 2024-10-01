@@ -13,16 +13,15 @@ import (
 	"fmt"
 	"go/build"
 	"html/template"
-	"io/ioutil"
 	"math"
 	"os"
 	"path/filepath"
 
-	"github.com/essentialkaos/ek/v12/color"
-	"github.com/essentialkaos/ek/v12/fsutil"
-	"github.com/essentialkaos/ek/v12/mathutil"
-	"github.com/essentialkaos/ek/v12/path"
-	"github.com/essentialkaos/ek/v12/strutil"
+	"github.com/essentialkaos/ek/v13/color"
+	"github.com/essentialkaos/ek/v13/fsutil"
+	"github.com/essentialkaos/ek/v13/mathutil"
+	"github.com/essentialkaos/ek/v13/path"
+	"github.com/essentialkaos/ek/v13/strutil"
 
 	"golang.org/x/tools/cover"
 )
@@ -417,7 +416,7 @@ func getSourceData(file string) ([]byte, error) {
 		return nil, err
 	}
 
-	return ioutil.ReadFile(srcFile)
+	return os.ReadFile(srcFile)
 }
 
 // getCoverageColors generates CSS with colors for different coverage levels
