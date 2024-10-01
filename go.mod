@@ -1,9 +1,9 @@
 module github.com/essentialkaos/htmlcov
 
-go 1.18
+go 1.22.7
 
 require (
-	github.com/essentialkaos/ek/v12 v12.130.0
+	github.com/essentialkaos/ek/v13 v13.5.1
 	golang.org/x/tools v0.25.0
 )
 
