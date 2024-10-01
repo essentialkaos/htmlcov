@@ -2,6 +2,7 @@
 
 <p align="center">
   <a href="https://kaos.sh/r/htmlcov"><img src="https://kaos.sh/r/htmlcov.svg" alt="GoReportCard" /></a>
+  <a href="https://kaos.sh/y/htmlcov"><img src="https://kaos.sh/y/1bff0f909cd74de7bfe0baf2f23a18da.svg" alt="Codacy badge" /></a>
   <a href="https://kaos.sh/w/htmlcov/ci"><img src="https://kaos.sh/w/htmlcov/ci.svg" alt="GitHub Actions CI Status" /></a>
   <a href="https://kaos.sh/w/htmlcov/codeql"><img src="https://kaos.sh/w/htmlcov/codeql.svg" alt="GitHub Actions CodeQL Status" /></a>
   <a href="#license"><img src=".github/images/license.svg"/></a>
