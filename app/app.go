@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/essentialkaos/ek/v13/fmtc"
-	"github.com/essentialkaos/ek/v13/fsutil"
 	"github.com/essentialkaos/ek/v13/options"
 	"github.com/essentialkaos/ek/v13/support"
 	"github.com/essentialkaos/ek/v13/support/apps"
@@ -141,15 +140,10 @@ func configureUI() {
 // process starts coverage profile processing
 func process(args options.Arguments) {
 	covFile := args.Get(0).Clean().String()
-	err := fsutil.ValidatePerms("FRS", covFile)
-
-	if err != nil {
-		printErrorAndExit(err.Error())
-	}
-
 	start := time.Now()
 	output := options.GetS(OPT_OUTPUT)
-	err = convertProfile(covFile, output)
+
+	err := convertProfile(covFile, output)
 
 	if err != nil {
 		printErrorAndExit(err.Error())
@@ -214,12 +208,12 @@ func genUsage() *usage.Info {
 	info.AddOption(OPT_VER, "Show version")
 
 	info.AddRawExample(
-		"go test -coverprofile=cover.out ./... && htmlcov cover.out",
+		`go test -coverprofile='cover.out' ./... && htmlcov cover.out`,
 		"Create coverage profile and convert it to HTML",
 	)
 
 	info.AddRawExample(
-		"go test -coverprofile=cover.out ./... && htmlcov -R -o report.html cover.out",
+		`go test -coverprofile='cover.out' ./... && htmlcov -R -o report.html cover.out`,
 		"Create coverage profile and convert it to HTML, save as report.html and remove profile",
 	)
 
