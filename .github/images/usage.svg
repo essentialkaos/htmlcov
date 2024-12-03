@@ -63,9 +63,9 @@
   <text x="12" y="200">  <tspan class="g">--help</tspan><tspan class="s">, </tspan><tspan class="g">-h</tspan> <tspan class="d">.........</tspan> Show this help message</text>
   <text x="12" y="220">  <tspan class="g">--version</tspan><tspan class="s">, </tspan><tspan class="g">-v</tspan> <tspan class="d">......</tspan> Show version</text>
   <text x="12" y="260"><tspan class="BB">Examples</tspan></text>
-  <text x="12" y="300">  go test -coverprofile=cover.out ./... &amp;&amp; htmlcov cover.out</text>
+  <text x="12" y="300">  go test -coverprofile=&#39;cover.out&#39; ./... &amp;&amp; htmlcov cover.out</text>
   <text x="12" y="320">  <tspan class="II d">Create coverage profile and convert it to HTML</tspan></text>
-  <text x="12" y="360">  go test -coverprofile=cover.out ./... &amp;&amp; htmlcov -R -o report.html cover.out</text>
+  <text x="12" y="360">  go test -coverprofile=&#39;cover.out&#39; ./... &amp;&amp; htmlcov -R -o report.html cover.out</text>
   <text x="12" y="380">  <tspan class="II d">Create coverage profile and convert it to HTML, save as report.html and remove profile</tspan></text>
 
   <rect x="800" y="36" width="30.3" height="362" fill="url(#fog)"/>
