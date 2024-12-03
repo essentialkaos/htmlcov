@@ -19,6 +19,7 @@ import (
 	"github.com/essentialkaos/ek/v13/support"
 	"github.com/essentialkaos/ek/v13/support/apps"
 	"github.com/essentialkaos/ek/v13/support/deps"
+	"github.com/essentialkaos/ek/v13/terminal"
 	"github.com/essentialkaos/ek/v13/timeutil"
 	"github.com/essentialkaos/ek/v13/usage"
 	"github.com/essentialkaos/ek/v13/usage/completion/bash"
@@ -33,7 +34,7 @@ import (
 // Basic utility info
 const (
 	APP  = "htmlcov"
-	VER  = "1.1.4"
+	VER  = "1.1.5"
 	DESC = "Utility for converting coverage profiles into HTML pages"
 )
 
@@ -84,10 +85,7 @@ func Run(gitRev string, gomod []byte) {
 	preConfigureUI()
 
 	if len(errs) != 0 {
-		for _, err := range errs {
-			printError(err.Error())
-		}
-
+		terminal.Error(errs.Error("- "))
 		os.Exit(1)
 	}
 
@@ -161,20 +159,15 @@ func process(args options.Arguments) {
 		os.Remove(covFile)
 	}
 
-	fmtc.Printf(
-		"{g}Report successfully saved as {g*}%s{!} {s-}(processing: %s){!}\n",
+	fmtc.Printfn(
+		"{g}Report successfully saved as {g*}%s{!} {s-}(processing: %s){!}",
 		output, timeutil.PrettyDuration(time.Since(start)),
 	)
 }
 
-// printError prints error message to console
-func printError(f string, a ...interface{}) {
-	fmtc.Fprintf(os.Stderr, "{r}"+f+"{!}\n", a...)
-}
-
 // printErrorAndExit print error message and exit with exit code 1
 func printErrorAndExit(f string, a ...interface{}) {
-	printError(f, a...)
+	terminal.Error(f, a...)
 	os.Exit(1)
 }
 
