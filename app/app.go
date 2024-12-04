@@ -14,11 +14,11 @@ import (
 	"time"
 
 	"github.com/essentialkaos/ek/v13/fmtc"
-	"github.com/essentialkaos/ek/v13/fsutil"
 	"github.com/essentialkaos/ek/v13/options"
 	"github.com/essentialkaos/ek/v13/support"
 	"github.com/essentialkaos/ek/v13/support/apps"
 	"github.com/essentialkaos/ek/v13/support/deps"
+	"github.com/essentialkaos/ek/v13/terminal"
 	"github.com/essentialkaos/ek/v13/timeutil"
 	"github.com/essentialkaos/ek/v13/usage"
 	"github.com/essentialkaos/ek/v13/usage/completion/bash"
@@ -33,7 +33,7 @@ import (
 // Basic utility info
 const (
 	APP  = "htmlcov"
-	VER  = "1.1.4"
+	VER  = "1.1.5"
 	DESC = "Utility for converting coverage profiles into HTML pages"
 )
 
@@ -84,10 +84,7 @@ func Run(gitRev string, gomod []byte) {
 	preConfigureUI()
 
 	if len(errs) != 0 {
-		for _, err := range errs {
-			printError(err.Error())
-		}
-
+		terminal.Error(errs.Error("- "))
 		os.Exit(1)
 	}
 
@@ -143,15 +140,10 @@ func configureUI() {
 // process starts coverage profile processing
 func process(args options.Arguments) {
 	covFile := args.Get(0).Clean().String()
-	err := fsutil.ValidatePerms("FRS", covFile)
-
-	if err != nil {
-		printErrorAndExit(err.Error())
-	}
-
 	start := time.Now()
 	output := options.GetS(OPT_OUTPUT)
-	err = convertProfile(covFile, output)
+
+	err := convertProfile(covFile, output)
 
 	if err != nil {
 		printErrorAndExit(err.Error())
@@ -161,20 +153,15 @@ func process(args options.Arguments) {
 		os.Remove(covFile)
 	}
 
-	fmtc.Printf(
-		"{g}Report successfully saved as {g*}%s{!} {s-}(processing: %s){!}\n",
+	fmtc.Printfn(
+		"{g}Report successfully saved as {g*}%s{!} {s-}(processing: %s){!}",
 		output, timeutil.PrettyDuration(time.Since(start)),
 	)
 }
 
-// printError prints error message to console
-func printError(f string, a ...interface{}) {
-	fmtc.Fprintf(os.Stderr, "{r}"+f+"{!}\n", a...)
-}
-
 // printErrorAndExit print error message and exit with exit code 1
 func printErrorAndExit(f string, a ...interface{}) {
-	printError(f, a...)
+	terminal.Error(f, a...)
 	os.Exit(1)
 }
 
@@ -221,12 +208,12 @@ func genUsage() *usage.Info {
 	info.AddOption(OPT_VER, "Show version")
 
 	info.AddRawExample(
-		"go test -coverprofile=cover.out ./... && htmlcov cover.out",
+		`go test -coverprofile='cover.out' ./... && htmlcov cover.out`,
 		"Create coverage profile and convert it to HTML",
 	)
 
 	info.AddRawExample(
-		"go test -coverprofile=cover.out ./... && htmlcov -R -o report.html cover.out",
+		`go test -coverprofile='cover.out' ./... && htmlcov -R -o report.html cover.out`,
 		"Create coverage profile and convert it to HTML, save as report.html and remove profile",
 	)
 

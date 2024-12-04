@@ -18,7 +18,6 @@ import (
 	"path/filepath"
 
 	"github.com/essentialkaos/ek/v13/color"
-	"github.com/essentialkaos/ek/v13/fsutil"
 	"github.com/essentialkaos/ek/v13/mathutil"
 	"github.com/essentialkaos/ek/v13/path"
 	"github.com/essentialkaos/ek/v13/strutil"
@@ -409,14 +408,7 @@ func getSourceData(file string) ([]byte, error) {
 		return nil, fmt.Errorf("Can't find file %q: %w", file, err)
 	}
 
-	srcFile := filepath.Join(pkg.Dir, file)
-	err = fsutil.ValidatePerms("FRS", srcFile)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return os.ReadFile(srcFile)
+	return os.ReadFile(filepath.Join(pkg.Dir, file))
 }
 
 // getCoverageColors generates CSS with colors for different coverage levels
