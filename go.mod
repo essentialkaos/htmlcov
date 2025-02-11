@@ -4,7 +4,7 @@ go 1.22.8
 
 require (
 	github.com/essentialkaos/ek/v13 v13.15.12
-	golang.org/x/tools v0.29.0
+	golang.org/x/tools v0.30.0
 )
 
 require (
