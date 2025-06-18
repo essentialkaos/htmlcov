@@ -3,7 +3,7 @@ module github.com/essentialkaos/htmlcov
 go 1.23.6
 
 require (
-	github.com/essentialkaos/ek/v13 v13.28.1
+	github.com/essentialkaos/ek/v13 v13.30.1
 	golang.org/x/tools v0.34.0
 )
 
