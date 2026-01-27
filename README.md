@@ -22,7 +22,7 @@
 
 #### From source
 
-To build the `htmlcov` from scratch, make sure you have a working [Go 1.23+](https://github.com/essentialkaos/.github/blob/master/GO-VERSION-SUPPORT.md) workspace (_[instructions](https://go.dev/doc/install)_), then:
+To build the `htmlcov` from scratch, make sure you have a working [Go 1.24+](https://github.com/essentialkaos/.github/blob/master/GO-VERSION-SUPPORT.md) workspace (_[instructions](https://go.dev/doc/install)_), then:
 
 ```
 go install github.com/essentialkaos/htmlcov@latest
@@ -42,17 +42,17 @@ You can generate completion for `bash`, `zsh` or `fish` shell.
 
 Bash:
 ```bash
-sudo htmlcov --completion=bash 1> /etc/bash_completion.d/htmlcov
+htmlcov --completion=bash | sudo tee /etc/bash_completion.d/htmlcov > /dev/null
 ```
 
 ZSH:
 ```bash
-sudo htmlcov --completion=zsh 1> /usr/share/zsh/site-functions/htmlcov
+htmlcov --completion=zsh | sudo tee /usr/share/zsh/site-functions/htmlcov > /dev/null
 ```
 
 Fish:
 ```bash
-sudo htmlcov --completion=fish 1> /usr/share/fish/vendor_completions.d/htmlcov.fish
+htmlcov --completion=fish | sudo tee /usr/share/fish/vendor_completions.d/htmlcov.fish > /dev/null
 ```
 
 ### Man documentation
