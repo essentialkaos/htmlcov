@@ -17,10 +17,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/essentialkaos/ek/v13/color"
-	"github.com/essentialkaos/ek/v13/mathutil"
-	"github.com/essentialkaos/ek/v13/path"
-	"github.com/essentialkaos/ek/v13/strutil"
+	"github.com/essentialkaos/ek/v14/color"
+	"github.com/essentialkaos/ek/v14/path"
+	"github.com/essentialkaos/ek/v14/strutil"
 
 	"golang.org/x/tools/cover"
 )
@@ -242,7 +241,7 @@ func (c *CoverData) Lines() []int {
 	var maxLines int
 
 	for _, f := range c.Files {
-		maxLines = mathutil.Max(maxLines, f.Lines)
+		maxLines = max(maxLines, f.Lines)
 	}
 
 	result := make([]int, maxLines)

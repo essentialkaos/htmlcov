@@ -13,19 +13,19 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/essentialkaos/ek/v13/fmtc"
-	"github.com/essentialkaos/ek/v13/options"
-	"github.com/essentialkaos/ek/v13/support"
-	"github.com/essentialkaos/ek/v13/support/apps"
-	"github.com/essentialkaos/ek/v13/support/deps"
-	"github.com/essentialkaos/ek/v13/terminal"
-	"github.com/essentialkaos/ek/v13/timeutil"
-	"github.com/essentialkaos/ek/v13/usage"
-	"github.com/essentialkaos/ek/v13/usage/completion/bash"
-	"github.com/essentialkaos/ek/v13/usage/completion/fish"
-	"github.com/essentialkaos/ek/v13/usage/completion/zsh"
-	"github.com/essentialkaos/ek/v13/usage/man"
-	"github.com/essentialkaos/ek/v13/usage/update"
+	"github.com/essentialkaos/ek/v14/fmtc"
+	"github.com/essentialkaos/ek/v14/options"
+	"github.com/essentialkaos/ek/v14/support"
+	"github.com/essentialkaos/ek/v14/support/apps"
+	"github.com/essentialkaos/ek/v14/support/deps"
+	"github.com/essentialkaos/ek/v14/terminal"
+	"github.com/essentialkaos/ek/v14/timeutil"
+	"github.com/essentialkaos/ek/v14/usage"
+	"github.com/essentialkaos/ek/v14/usage/completion/bash"
+	"github.com/essentialkaos/ek/v14/usage/completion/fish"
+	"github.com/essentialkaos/ek/v14/usage/completion/zsh"
+	"github.com/essentialkaos/ek/v14/usage/man"
+	"github.com/essentialkaos/ek/v14/usage/update"
 )
 
 // ////////////////////////////////////////////////////////////////////////////////// //
@@ -33,7 +33,7 @@ import (
 // Basic utility info
 const (
 	APP  = "htmlcov"
-	VER  = "1.1.6"
+	VER  = "1.2.0"
 	DESC = "Utility for converting coverage profiles into HTML pages"
 )
 
@@ -84,7 +84,7 @@ func Run(gitRev string, gomod []byte) {
 	preConfigureUI()
 
 	if len(errs) != 0 {
-		terminal.Error(errs.Error("- "))
+		terminal.Error(errs.ErrorWithPrefix(" - "))
 		os.Exit(1)
 	}
 
@@ -155,7 +155,7 @@ func process(args options.Arguments) {
 
 	fmtc.Printfn(
 		"{g}Report successfully saved as {g*}%s{!} {s-}(processing: %s){!}",
-		output, timeutil.PrettyDuration(time.Since(start)),
+		output, timeutil.Pretty(time.Since(start)).Mini(),
 	)
 }
 
