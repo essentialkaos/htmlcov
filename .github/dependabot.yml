@@ -4,6 +4,11 @@ updates:
   - package-ecosystem: "gomod"
     directory: "/"
     target-branch: "develop"
+    cooldown:
+      default-days: 7
+      exclude:
+        - "github.com/essentialkaos/*"
+        - "golang.org/x/*"
     schedule:
       interval: "daily"
       timezone: "Etc/UTC"
@@ -11,8 +16,6 @@ updates:
     labels:
       - "PR • MAINTENANCE"
     assignees:
-      - "andyone"
-    reviewers:
       - "andyone"
     groups:
       all:
@@ -24,6 +27,8 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     target-branch: "develop"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
       timezone: "Etc/UTC"
@@ -31,6 +36,4 @@ updates:
     labels:
       - "PR • MAINTENANCE"
     assignees:
-      - "andyone"
-    reviewers:
       - "andyone"
