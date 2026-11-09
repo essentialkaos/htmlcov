@@ -1,7 +1,6 @@
 <p align="center"><a href="#readme"><img src=".github/images/card.svg"/></a></p>
 
 <p align="center">
-  <a href="https://kaos.sh/r/htmlcov"><img src="https://kaos.sh/r/htmlcov.svg" alt="GoReportCard" /></a>
   <a href="https://kaos.sh/y/htmlcov"><img src="https://kaos.sh/y/1bff0f909cd74de7bfe0baf2f23a18da.svg" alt="Codacy badge" /></a>
   <a href="https://kaos.sh/w/htmlcov/ci"><img src="https://kaos.sh/w/htmlcov/ci.svg" alt="GitHub Actions CI Status" /></a>
   <a href="https://kaos.sh/w/htmlcov/codeql"><img src="https://kaos.sh/w/htmlcov/codeql.svg" alt="GitHub Actions CodeQL Status" /></a>
@@ -22,7 +21,7 @@
 
 #### From source
 
-To build the `htmlcov` from scratch, make sure you have a working [Go 1.23+](https://github.com/essentialkaos/.github/blob/master/GO-VERSION-SUPPORT.md) workspace (_[instructions](https://go.dev/doc/install)_), then:
+To build the `htmlcov` from scratch, make sure you have a working [Go 1.24+](https://github.com/essentialkaos/.github/blob/master/GO-VERSION-SUPPORT.md) workspace (_[instructions](https://go.dev/doc/install)_), then:
 
 ```
 go install github.com/essentialkaos/htmlcov@latest
@@ -42,17 +41,17 @@ You can generate completion for `bash`, `zsh` or `fish` shell.
 
 Bash:
 ```bash
-sudo htmlcov --completion=bash 1> /etc/bash_completion.d/htmlcov
+htmlcov --completion=bash | sudo tee /etc/bash_completion.d/htmlcov > /dev/null
 ```
 
 ZSH:
 ```bash
-sudo htmlcov --completion=zsh 1> /usr/share/zsh/site-functions/htmlcov
+htmlcov --completion=zsh | sudo tee /usr/share/zsh/site-functions/htmlcov > /dev/null
 ```
 
 Fish:
 ```bash
-sudo htmlcov --completion=fish 1> /usr/share/fish/vendor_completions.d/htmlcov.fish
+htmlcov --completion=fish | sudo tee /usr/share/fish/vendor_completions.d/htmlcov.fish > /dev/null
 ```
 
 ### Man documentation
